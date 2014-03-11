@@ -1,0 +1,97 @@
+public static string gamePath; //This variable will store the path to the File
+public static string file; //Will store the name of the file
+public static TextReader reader2; //This variable is used to be able to read a single line from a file
+
+//This function will tell you how to create a file and even append stuff to the file
+//Also the main idea of where to store the file
+public void createHighscores()
+{
+    //Ok so, instead of actually telling the game exactly in which Folder to store the file
+    //We use Application.persistentDataPath to let the Application (game) decide where it
+    //prefers to store the file (it creates a invisible folder and stores it there).
+    
+    //This is good since it means that any computer will be able to create and store the files
+    //While also letting you just use this to always find it
+    gamePath = Application.persistentDataPath;
+    
+    //This will simply store the name that you want to give to the file
+    file = "scores.txt";
+    
+    int creationS = 0;
+    
+    print("Creating " + gamePath + "/" + file); //You could use this to see if the file is being created (it will appear where errors appear)
+    
+    //In this case I'm creating a highscore file, so I use a for to create 10
+    //0s in a file to simulate ten different highscores
+    for(int j=0; j < 10; j++)
+    {
+        if(j == 0)
+        {
+	          //To write a text file, you just use this function as it is written
+	          //WriteAllText will just write a string to a file
+	          //If you use this again on a file that you have stuff written on
+	          //it WILL overwrite it (you use AppendAllText to not overwrite)
+            File.WriteAllText(gamePath + "/" + file, creationS.ToString());
+        }
+        else
+        {
+	          //This will append the text to the file
+	          //I add the "\n" to tell the file to create a newline
+            File.AppendAllText(gamePath + "/" + file,"\n" + creationS.ToString());
+        }
+    }
+}
+
+//This function reads a file and returns the result
+public int readScore()
+{
+    //We use Application.persistentDataPath to look for wherever the folder is in which the game is storing the files
+    gamePath = Application.persistentDataPath;
+    
+     //Also the file name you are looking for
+    file = "ahorros.txt";
+    
+    //To be able to JUST read from a file you use File.ReadAllText which will return a string with ALL the text in the file
+    //If you want to just read a single line, look at the next example
+    //If you want the string to be something else, you you use the Parse thing (<desired type>.Parse)
+    int fileContents = int.Parse(File.ReadAllText(gamePath + "/" + file));
+    
+    return fileContents;
+}
+
+//This function is an example of how you can read single lines form a file and store them in a variable
+//You can also see ways to check if files exists
+public void readMedals()
+{
+    //We use Application.persistentDataPath to look for wherever the folder is in which the game is storing the files
+    gamePath = Application.persistentDataPath;
+    
+    //Also the file name you are looking for
+    file = "medals.txt";
+    
+    //You check if the file exists with File.Exists		
+    if(File.Exists(gamePath + "/" + file)) 
+    {
+	      //To be able to just read a single line you have to use the TextReader variable (reader2 in this case)
+	      //Instead of just reading outright, you use File.OpenText to give reader2 access to the file
+	      reader2 = File.OpenText(gamePath + "/" + file);
+			
+	      print("The file " + file + " exists in " + gamePath + "/" + file + "reading from it now");
+			
+	      //Here I read numbers from a file, which is why I use a for to read each number by its own
+	      for(int i=0; i < 12; i++)
+	      {
+	          //ReadLine() is part of the TextReader, and will read a single line
+	           tempValue = bool.Parse(reader2.ReadLine()); 
+			
+	            medals_unlocked[i] = tempValue;
+	      }
+	
+	      //Remember to close the file
+	      reader2.Close();
+    }
+    else
+    {
+	      print(gamePath + "/" + file + "does not exist!");
+    }
+}
