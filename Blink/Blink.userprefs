@@ -1,9 +1,10 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\AVBrain.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\projectile.cs">
     <Files>
-      <File FileName="Assets\Script\AVBrain.cs" Line="188" Column="4" />
-      <File FileName="Assets\Script\FSMSystem.cs" Line="157" Column="22" />
+      <File FileName="Assets\Script\AVBrain.cs" Line="163" Column="66" />
+      <File FileName="Assets\Script\TurretBehavior.cs" Line="19" Column="3" />
+      <File FileName="Assets\Script\projectile.cs" Line="11" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

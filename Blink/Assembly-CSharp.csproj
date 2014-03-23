@@ -48,9 +48,11 @@
   <ItemGroup>
      <Compile Include="Assets\Script\AVBrain.cs" />
      <Compile Include="Assets\Script\FSMSystem.cs" />
+     <Compile Include="Assets\Script\TurretBehavior.cs" />
      <Compile Include="Assets\Script\ballTeleport.cs" />
      <Compile Include="Assets\Script\levelControl.cs" />
      <Compile Include="Assets\Script\musicManager.cs" />
+     <Compile Include="Assets\Script\projectile.cs" />
      <Compile Include="Assets\Script\soundManager.cs" />
      <Compile Include="Assets\Script\teleportIndicator.cs" />
   </ItemGroup>

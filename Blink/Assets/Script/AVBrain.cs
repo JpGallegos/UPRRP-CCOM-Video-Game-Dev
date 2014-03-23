@@ -53,6 +53,11 @@ public class AVBrain : MonoBehaviour {
 		fsm.AddState(chase);
 	}
 
+	public void fire(GameObject projectile, Vector3 origin, Vector3 direction) {
+		Rigidbody bulletInstance = Instantiate(projectile, origin, Quaternion.Euler(new Vector3(0,0,0))) as Rigidbody;
+		bulletInstance.velocity = direction * 10f;
+	}
+
 	void OnCollisionEnter(Collision collision) {
 		if (collision.gameObject.tag == "Edge" || 
 		    collision.gameObject.tag == "Wall") {
@@ -148,12 +153,16 @@ public class AttackState : FSMState {
 	private float npcSightRange;
 	private float npcFieldOfViewAngle;
 	private float npcMoveSpeed;
+	private GameObject Turret;
+	private TurretBehavior TurretBehavior;
 
 	public AttackState(GameObject npc) {
 		npcFieldOfViewAngle = npc.GetComponent<AVBrain> ().FieldOfViewAngle;
 		npcSightRange = npc.GetComponent<AVBrain> ().SightRange;
 		npcFireRange = npc.GetComponent<AVBrain> ().TargetRange;
 		npcMoveSpeed = npc.GetComponent<AVBrain> ().PatrolSpeed * 1.5f;
+		Turret = npc.transform.GetChild (0).gameObject;
+		TurretBehavior = Turret.transform.GetComponent<TurretBehavior> ();
 		stateID = StateID.Attack;
 	} // AttackState() end
 
@@ -178,28 +187,26 @@ public class AttackState : FSMState {
 	} // Reason() end
 	
 	public override void Act(GameObject player, GameObject npc) {
-		Transform TurretTransform = npc.transform.GetChild(0);
-		Vector3 direction = player.transform.position - TurretTransform.position;
+		Vector3 direction = player.transform.position - Turret.transform.position;
 		float distance = direction.magnitude;
+			if (distance < npcFireRange) {
+				// If in firing range check if enemy is in field on view
+				float angle = Vector3.Angle(direction, Turret.transform.forward);
+				npc.rigidbody.velocity = new Vector3(0f, 0f, 0f);
 
-		if (distance < npcFireRange) {
-			// If in firing range check if enemy is in field on view
-			float angle = Vector3.Angle(direction, TurretTransform.forward);
-			npc.rigidbody.velocity = new Vector3(0f, 0f, 0f);
+				if (angle <= npcFieldOfViewAngle) {
+					// If in field of view, fire
+					RaycastHit hit;
 
-			if (angle <= npcFieldOfViewAngle) {
-				// If in field of view, fire
-				RaycastHit hit;
-
-				if (Physics.Raycast(TurretTransform.position, direction.normalized, out hit, npcFireRange)) {
-					if (hit.collider.gameObject == player) {
-						Debug.Log("pew");
+					if (Physics.Raycast(Turret.transform.position, direction.normalized, out hit, npcFireRange)) {
+						if (hit.collider.gameObject == player) {
+							TurretBehavior.Fire(direction.normalized);
+						} 
 					}
+				} else {
+					// else move to target
+					npc.rigidbody.velocity = (player.transform.position - npc.transform.position).normalized * npcMoveSpeed;
 				}
-			} 
-		} else {
-			// else move to target
-			npc.rigidbody.velocity = (player.transform.position - npc.transform.position).normalized * npcMoveSpeed;
 		}
 	} // Act() end
 
